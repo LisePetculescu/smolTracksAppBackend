@@ -7,7 +7,7 @@
 import express from "express";
 import cors from "cors";
 import connection from "./database.js";
-import { log } from "console";
+
 
 const app = express();
 const port = process.env.PORT || 3333;
