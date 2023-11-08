@@ -6,23 +6,25 @@
 
 import express from "express";
 import cors from "cors";
+import connection from "./database.js";
+import { log } from "console";
 
 const app = express();
 const port = process.env.PORT || 3333;
 
 app.use(express.json());
-app.use(cors()); 
+app.use(cors());
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}, http://localhost:${port}`);
 });
 
-app.get("/", (request, response) => {
-  response.send("smol backend app 🎉");
-});
+// app.get("/", (request, response) => {
+//   response.send("smol backend app 🎉");
+// });
 
 // Get all tracks
-tracksRouter.get("/", async (request, response) => {
+app.get("/", async (request, response) => {
   const queryString =
     /*sql*/
     `
@@ -56,7 +58,7 @@ ORDER BY tracks.title;
 });
 
 // Get a single track
-tracksRouter.get("/:id", async (request, response) => {
+app.get("/:id", async (request, response) => {
   const id = request.params.id;
   const queryString =
     /* sql */
@@ -79,3 +81,12 @@ tracksRouter.get("/:id", async (request, response) => {
   response.json(await tryExecute(queryString, values));
 });
 
+async function tryExecute(query, values) {
+  try {
+    console.log("TRY EXECUTE");
+    const [results] = await connection.execute(query, values);
+    return results;
+  } catch (error) {
+    return error;
+  }
+}
